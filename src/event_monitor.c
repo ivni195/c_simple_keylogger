@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <linux/input.h>
 #include "event_monitor.h"
 #include "client.h"
@@ -34,6 +35,7 @@ _Noreturn void monitor_event(const char *event_file, int flag, const char *targe
             fprintf(stderr, "Failed opening logging file %s.\n", target);
             exit(0);
         }
+        chmod(log_filename, S_IRUSR | S_IRGRP | S_IROTH);
     } else {
         fprintf(stderr, "Must specify NETWORK_LOG or FILE_LOG.\n");
         exit(0);
