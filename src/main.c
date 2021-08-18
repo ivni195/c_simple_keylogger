@@ -7,6 +7,10 @@
 #include "event_monitor.h"
 
 #define ISSET(flags, flag) (((flags) & (flag)) == (flag))
+#define PRINT_USAGE_EXIT() ({  \
+        print_usage(argv[0]);  \
+        exit(0);               \
+})
 
 void print_usage(char *argv0) {
     printf(
@@ -48,28 +52,29 @@ int main(int argc, char **argv) {
         }
     }
 
+    if(geteuid() != 0){
+        fprintf(stderr, "You must run this program as root.\n");
+        PRINT_USAGE_EXIT();
+    }
+
     if(flag == 0){
         fprintf(stderr, "You must specify -f or -n.\n");
-        print_usage(argv[0]);
-        exit(0);
+        PRINT_USAGE_EXIT();
     }
 
     if(ISSET(flag, NETWORK_LOG) && ISSET(flag, FILE_LOG)){
         fprintf(stderr, "You can't use both -f and -n.\n");
-        print_usage(argv[0]);
-        exit(0);
+        PRINT_USAGE_EXIT();
     }
 
     if(ISSET(flag, NETWORK_LOG) && (strlen(target) == 0 || port == 0)){
         fprintf(stderr, "You must specify target (address) and port.\n");
-        print_usage(argv[0]);
-        exit(0);
+        PRINT_USAGE_EXIT();
     }
 
     if (ISSET(flag, NETWORK_LOG) && strlen(target) == 0){
         fprintf(stderr, "You must specify target (log file path).\n");
-        print_usage(argv[0]);
-        exit(0);
+        PRINT_USAGE_EXIT();
     }
 
     filenames = get_keyboard_event_files();
