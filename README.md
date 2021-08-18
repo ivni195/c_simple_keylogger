@@ -13,7 +13,7 @@ In order to remove the executable:
 ```bash
 make clean
 ```
-#Usage
+# Usage
 In order to use the keylogger you will need root 
 priviliges as you need to be able to read `/dev/input/event`
 files.
